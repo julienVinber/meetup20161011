@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Ajouter un membre</h2>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        function addFormLigne(collectionHolder, addLink) {
+            var prototype = collectionHolder.data('prototype');
+            var index = collectionHolder.data('index');
+            var newForm = prototype.replace(/__name__/g, index);
+            collectionHolder.data('index', index + 1);
+            var newFormLi = $('<div class="ligne"></div>').append(newForm);
+            addLink.before(newFormLi);
+            addFormDeleteLink(newFormLi);
+        }
+
+        function addFormDeleteLink($tagFormLi) {
+            var $removeFormA = $('<a href="#">Supprimer</a>');
+            $tagFormLi.append($removeFormA);
+
+            $removeFormA.on('click', function(e) {
+                e.preventDefault();
+                $tagFormLi.remove();
+            });
+        }
+
+        jQuery(document).ready(function() {
+            var collectionHolder = $('#membre_adresse');
+            var addLink = $('<a href="#" class="add_adresse_link">Ajouter</a>')
+                    .on('click', function(e) {
+                        e.preventDefault();
+                        addFormLigne(collectionHolder, addLink);
+                    });
+
+            collectionHolder.append(addLink);
+            collectionHolder.data('index', collectionHolder.find(':input').length);
+
+            collectionHolder.find('>div').each(function() {
+                addFormDeleteLink($(this));
+            });
+
+        });
+    </script>
+    {{ form(form) }}
+{% endblock %}
